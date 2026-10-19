@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# REPLACE with your real GitHub Pages URL before publishing
+Sitemap: https://merajhosenbayzid-hue.github.io/website-seo-pilot/sitemap.xml
