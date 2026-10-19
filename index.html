@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website SEO Pilot — Free SEO Research &amp; Organic Growth Tools</title>
+<meta name="description" content="Website SEO Pilot is a free SEO research and planning toolkit: find USA search keywords, plan SEO content, audit your website, and measure real organic traffic growth.">
+<link rel="canonical" href="https://merajhosenbayzid-hue.github.io/website-seo-pilot/index.html">
+<meta property="og:title" content="Website SEO Pilot — Free SEO Research &amp; Organic Growth Tools">
+<meta property="og:description" content="Find keywords, plan content, audit SEO, and track real organic traffic. Free research &amp; planning tools.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="index.html"><span class="brand-mark">✈</span> Website SEO Pilot</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="keyword-finder.html">Keyword Finder</a>
+      <a href="content-planner.html">Content Planner</a>
+      <a href="seo-audit.html">SEO Audit</a>
+      <a href="traffic-analytics.html">Traffic Analytics</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="tag">Free SEO Tools</div>
+    <h1>Website SEO Pilot</h1>
+    <p class="sub">Grow your website with organic search — research keywords, plan content, fix SEO issues, and measure real traffic from Google.</p>
+    <div class="analyze-box">
+      <input id="analyzeInput" type="url" placeholder="Website to analyze — https://example.com" aria-label="Website to analyze">
+      <button class="btn" id="analyzeBtn">Analyze</button>
+    </div>
+    <div class="hero-note">Runs a free on-page SEO check of any URL you can open in your browser.</div>
+  </div>
+</section>
+
+<main class="wrap">
+  <section class="section">
+    <h2>Your SEO toolkit</h2>
+    <p class="lede">Four tools that cover the full organic-growth loop: research → plan → fix → measure.</p>
+    <div class="cards">
+      <a class="card" href="keyword-finder.html">
+        <span class="icon">🔍</span><span class="badge ready">v1 ready</span>
+        <h3>Keyword Finder</h3>
+        <p>Research USA Google search topics — keyword ideas with search intent, suggested pages and content angles.</p>
+      </a>
+      <a class="card" href="content-planner.html">
+        <span class="icon">📝</span><span class="badge ready">v1 ready</span>
+        <h3>Content Planner</h3>
+        <p>Turn keywords into full content plans: titles, meta descriptions, headings, FAQs and internal links.</p>
+      </a>
+      <a class="card" href="seo-audit.html">
+        <span class="icon">🩺</span><span class="badge ready">v1 ready</span>
+        <h3>SEO Audit</h3>
+        <p>Check any page for common SEO problems: title, meta description, H1, canonical, robots and more.</p>
+      </a>
+      <a class="card" href="traffic-analytics.html">
+        <span class="icon">📊</span><span class="badge v2">v2 — GSC</span>
+        <h3>Traffic Analytics</h3>
+        <p>Real clicks, impressions, CTR and positions from Google Search Console. Connects in the next version.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Automated SEO workflow</h2>
+    <p class="lede">Version 1 covers research and planning. Publishing automation and live analytics arrive in v2.</p>
+    <div class="steps">
+      <div class="step"><h4>Website Analysis</h4><p>Audit your pages and find SEO issues with the SEO Audit tool.</p></div>
+      <div class="step"><h4>Keyword Research</h4><p>Discover new keywords and content opportunities for the USA.</p></div>
+      <div class="step"><h4>Content Plan</h4><p>Build complete content plans for your chosen keywords.</p></div>
+      <div class="step"><h4>Review &amp; Publish</h4><p>You review every plan — nothing publishes automatically in v1.</p></div>
+      <div class="step"><h4>Traffic Monitoring</h4><p>Measure real Google Search Console data and plan the next move.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Our SEO rules</h2>
+    <p class="lede">This tool follows honest SEO practices — no shortcuts, no fake numbers.</p>
+    <div class="panel">
+      <ol class="rules">
+        <li>Only real SEO tools and genuinely useful content.</li>
+        <li>No bot traffic, fake clicks, traffic exchange or auto visitors.</li>
+        <li>No artificial manipulation of Google search results.</li>
+        <li>API keys and passwords are never stored in public frontend code.</li>
+        <li>Content is written in English for USA readers.</li>
+        <li>Every public page has its own title, meta description and canonical URL.</li>
+        <li>Sitemap and robots.txt are configured correctly.</li>
+        <li>No SEO data is shown unless it is real — never guessed.</li>
+        <li>Every content plan is reviewed by you before publishing.</li>
+        <li>Real organic traffic is measured with Google Search Console.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>✈ <strong>Website SEO Pilot</strong> — Free SEO Research &amp; Organic Growth Tools</span>
+    <span><a href="help.html">Help</a> · <a href="settings.html">Settings</a> · v1.0</span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script>
+document.getElementById("analyzeBtn").addEventListener("click", function(){
+  var v = document.getElementById("analyzeInput").value.trim();
+  if(!v){ toast("Enter a website URL first"); return; }
+  if(!/^https?:\/\//i.test(v)) v = "https://" + v;
+  var s = SP.settings(); s.site = v; SP.set("settings", s);
+  location.href = "seo-audit.html?url=" + encodeURIComponent(v);
+});
+document.getElementById("analyzeInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter") document.getElementById("analyzeBtn").click();
+});
+</script>
+</body>
+</html>

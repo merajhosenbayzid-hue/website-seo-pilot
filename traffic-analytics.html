@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traffic Analytics — Real Google Search Console Data | Website SEO Pilot</title>
+<meta name="description" content="Traffic Analytics shows real organic traffic — clicks, impressions, CTR and average position from Google Search Console. Connects in v2; no fake numbers, ever.">
+<link rel="canonical" href="https://merajhosenbayzid-hue.github.io/website-seo-pilot/traffic-analytics.html">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="index.html"><span class="brand-mark">✈</span> Website SEO Pilot</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="keyword-finder.html">Keyword Finder</a>
+      <a href="content-planner.html">Content Planner</a>
+      <a href="seo-audit.html">SEO Audit</a>
+      <a href="traffic-analytics.html">Traffic Analytics</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="section">
+    <h2>📊 Traffic Analytics</h2>
+    <p class="lede">The most important part of SEO Pilot: measuring <strong>real</strong> organic traffic. This page connects to Google Search Console in v2.</p>
+
+    <div class="panel" style="text-align:center;padding:44px 26px">
+      <div style="font-size:3rem;margin-bottom:10px">🔌</div>
+      <h3>Not connected yet</h3>
+      <p style="color:var(--muted);max-width:560px;margin:10px auto">Traffic Analytics shows <strong>only real data</strong> from Google Search Console. We never invent traffic numbers, and we never count our own test requests as organic clicks — so this page stays empty until you connect it.</p>
+      <span class="badge v2">Coming in v2</span>
+    </div>
+
+    <h2>What you'll see after connecting</h2>
+    <p class="lede">Once Google Search Console is linked, this dashboard reports:</p>
+    <div class="cards">
+      <div class="card"><span class="icon">👁️</span><h3>Impressions</h3><p>How many times your site appeared in Google Search.</p></div>
+      <div class="card"><span class="icon">🖱️</span><h3>Clicks</h3><p>How many times searchers clicked through from Google.</p></div>
+      <div class="card"><span class="icon">📈</span><h3>CTR</h3><p>Click-through rate: clicks divided by impressions.</p></div>
+      <div class="card"><span class="icon">🎯</span><h3>Average position</h3><p>Your average ranking position in search results.</p></div>
+      <div class="card"><span class="icon">🇺🇸</span><h3>USA traffic by page</h3><p>Which pages earn traffic from the United States.</p></div>
+      <div class="card"><span class="icon">🔑</span><h3>Top keywords</h3><p>Which search queries actually bring you clicks.</p></div>
+    </div>
+
+    <h2 style="margin-top:34px">What connecting requires (v2)</h2>
+    <div class="panel">
+      <ol style="margin-left:20px;display:grid;gap:10px">
+        <li><strong>Verify site ownership</strong> in <a href="https://search.google.com/search-console" target="_blank" rel="noopener">Google Search Console</a>.</li>
+        <li><strong>OAuth consent:</strong> you'll sign in with Google and grant read-only Search Console access — handled by the v2 backend, never in frontend JavaScript.</li>
+        <li><strong>API keys stay secret:</strong> all credentials live on the backend. They are never placed in HTML or <kbd>app.js</kbd>.</li>
+        <li>GitHub Pages hosts only static files, so v2 adds a small backend service for the OAuth flow and data storage.</li>
+      </ol>
+    </div>
+
+    <div class="notice"><strong>Our promise:</strong> no bot traffic, no fake clicks, no traffic exchange. If a number appears here, it came from Google.</div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>✈ <strong>Website SEO Pilot</strong> — Free SEO Research &amp; Organic Growth Tools</span>
+    <span><a href="help.html">Help</a> · <a href="settings.html">Settings</a> · v1.0</span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

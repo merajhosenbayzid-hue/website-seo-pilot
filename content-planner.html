@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Content Planner — Plan Content That Ranks | Website SEO Pilot</title>
+<meta name="description" content="Turn keywords into complete SEO content plans: titles, meta descriptions, H1, H2 sections, FAQs and internal link suggestions — reviewed by you before publishing.">
+<link rel="canonical" href="https://merajhosenbayzid-hue.github.io/website-seo-pilot/content-planner.html">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="index.html"><span class="brand-mark">✈</span> Website SEO Pilot</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="keyword-finder.html">Keyword Finder</a>
+      <a href="content-planner.html">Content Planner</a>
+      <a href="seo-audit.html">SEO Audit</a>
+      <a href="traffic-analytics.html">Traffic Analytics</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="section">
+    <h2>📝 SEO Content Planner</h2>
+    <p class="lede">Pick a keyword from the Keyword Finder (or type your own) and generate a complete, review-ready content plan. Nothing publishes automatically — you approve everything.</p>
+
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field">
+          <label for="kwSelect">Keyword from Finder</label>
+          <select id="kwSelect"><option value="">— choose —</option></select>
+          <div class="hint">Keywords you sent from the Keyword Finder appear here.</div>
+        </div>
+        <div class="field">
+          <label for="kwManual">…or type a keyword</label>
+          <input id="kwManual" type="text" placeholder="e.g. free URL shortener">
+        </div>
+      </div>
+      <button class="btn" id="genBtn">Generate content plan</button>
+    </div>
+
+    <div id="planOut"></div>
+
+    <h2 style="margin-top:10px">Saved plans</h2>
+    <p class="lede">Stored in your browser. Track each plan from Idea → Planned → Draft → Published.</p>
+    <div id="planList"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>✈ <strong>Website SEO Pilot</strong> — Free SEO Research &amp; Organic Growth Tools</span>
+    <span><a href="help.html">Help</a> · <a href="settings.html">Settings</a> · v1.0</span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  function titleCase(s){ return s.toLowerCase().replace(/\b\w/g, function(c){ return c.toUpperCase(); }); }
+  function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
+
+  var kwSelect = document.getElementById("kwSelect");
+  function refreshKeywords(){
+    var kws = SP.get("keywords", []);
+    kwSelect.innerHTML = '<option value="">— choose —</option>' + kws.map(function(k){
+      return '<option value="' + esc(k.keyword) + '">' + esc(k.keyword) + ' (' + k.intent + ')</option>';
+    }).join("");
+  }
+  refreshKeywords();
+
+  function buildPlan(keyword){
+    var t = keyword.trim().toLowerCase();
+    var P = titleCase(keyword.trim());
+    var site = (SP.settings().site || "https://example.com").replace(/\/+$/,"");
+    var s = slug(keyword.trim());
+    return {
+      keyword: keyword.trim(),
+      titles: [
+        P + ": The Complete Guide for 2026",
+        "How to Use " + P + " (Step-by-Step Tutorial)",
+        "The 10 Best " + P + " Options Compared"
+      ],
+      meta: "Learn everything about " + t + ": how it works, the best options, pricing and expert tips. A complete, beginner-friendly guide for 2026.",
+      h1: P + " — Everything You Need to Know",
+      h2s: [
+        "What Is " + P + "?",
+        "How " + P + " Works (Simple Explanation)",
+        "Key Benefits of Using " + P,
+        "How to Get Started: Step-by-Step",
+        "Common Mistakes to Avoid",
+        "Frequently Asked Questions"
+      ],
+      faqs: [
+        "Is " + t + " free to use?",
+        "How long does it take to get started with " + t + "?",
+        "What is the best " + t + " for beginners?",
+        "Is " + t + " safe and trustworthy?"
+      ],
+      links: [
+        "Link from your homepage to /" + s + "/ with anchor text \"" + t + "\"",
+        "Link from /" + s + "/ to related guide: " + site + "/blog/",
+        "Add \"" + t + "\" to your main navigation or footer links",
+        "Cross-link from older blog posts that mention " + t
+      ],
+      status: "idea",
+      created: new Date().toISOString().slice(0,10)
+    };
+  }
+
+  function planHTML(p, idx){
+    var html = '<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'
+      + '<h3 style="margin:0">📄 ' + esc(p.keyword) + '</h3>'
+      + '<span class="status ' + p.status + '">' + p.status.charAt(0).toUpperCase() + p.status.slice(1) + '</span></div>'
+      + '<div class="plan-meta"><span>Created ' + esc(p.created || "") + '</span></div>'
+      + '<div class="field" style="margin:12px 0"><label>Content title (pick one)</label><ul style="margin-left:18px">'
+      + p.titles.map(function(t){ return "<li>" + esc(t) + "</li>"; }).join("") + '</ul></div>'
+      + '<div class="field" style="margin:12px 0"><label>Meta description</label><p>' + esc(p.meta) + ' <span style="color:var(--muted)">(' + p.meta.length + ' chars)</span></p></div>'
+      + '<div class="field" style="margin:12px 0"><label>H1 heading</label><p>' + esc(p.h1) + '</p></div>'
+      + '<div class="field" style="margin:12px 0"><label>H2 section ideas</label><ul style="margin-left:18px">'
+      + p.h2s.map(function(h){ return "<li>" + esc(h) + "</li>"; }).join("") + '</ul></div>'
+      + '<div class="field" style="margin:12px 0"><label>FAQ ideas</label><ul style="margin-left:18px">'
+      + p.faqs.map(function(f){ return "<li>" + esc(f) + "</li>"; }).join("") + '</ul></div>'
+      + '<div class="field" style="margin:12px 0"><label>Internal link suggestions</label><ul style="margin-left:18px">'
+      + p.links.map(function(l){ return "<li>" + esc(l) + "</li>"; }).join("") + '</ul></div>'
+      + '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px">'
+      + '<select id="st-' + idx + '" style="padding:9px 12px;border:1.5px solid var(--line);border-radius:10px">'
+      + ["idea","planned","draft","published"].map(function(st){
+          return '<option value="' + st + '"' + (p.status===st?" selected":"") + '>' + st.charAt(0).toUpperCase()+st.slice(1) + '</option>';
+        }).join("") + '</select>'
+      + '<button class="btn small ghost" data-copy="' + idx + '">Copy plan</button>'
+      + '<button class="btn small danger" data-del="' + idx + '">Delete</button></div></div>';
+    return html;
+  }
+
+  function planText(p){
+    return "KEYWORD: " + p.keyword + "\nSTATUS: " + p.status
+      + "\n\nTITLE OPTIONS:\n- " + p.titles.join("\n- ")
+      + "\n\nMETA DESCRIPTION:\n" + p.meta
+      + "\n\nH1:\n" + p.h1
+      + "\n\nH2 SECTIONS:\n- " + p.h2s.join("\n- ")
+      + "\n\nFAQ IDEAS:\n- " + p.faqs.join("\n- ")
+      + "\n\nINTERNAL LINKS:\n- " + p.links.join("\n- ");
+  }
+
+  function renderList(){
+    var plans = SP.get("plans", []);
+    var box = document.getElementById("planList");
+    if(!plans.length){ box.innerHTML = '<div class="empty">No saved plans yet — generate one above.</div>'; return; }
+    box.innerHTML = plans.map(function(p,i){ return planHTML(p,i); }).join("");
+    plans.forEach(function(p,i){
+      var sel = document.getElementById("st-" + i);
+      if(sel) sel.addEventListener("change", function(){
+        plans[i].status = sel.value; SP.set("plans", plans); renderList(); toast("Status updated");
+      });
+    });
+    box.querySelectorAll("[data-copy]").forEach(function(b){
+      b.addEventListener("click", function(){ copyText(planText(plans[+b.getAttribute("data-copy")]), "Plan"); });
+    });
+    box.querySelectorAll("[data-del]").forEach(function(b){
+      b.addEventListener("click", function(){
+        if(!confirm("Delete this plan?")) return;
+        plans.splice(+b.getAttribute("data-del"), 1);
+        SP.set("plans", plans); renderList(); toast("Plan deleted");
+      });
+    });
+  }
+  renderList();
+
+  document.getElementById("genBtn").addEventListener("click", function(){
+    var kw = document.getElementById("kwManual").value.trim() || kwSelect.value;
+    if(!kw){ toast("Choose or type a keyword first"); return; }
+    var plans = SP.get("plans", []);
+    if(plans.some(function(p){ return p.keyword.toLowerCase() === kw.toLowerCase(); })){
+      toast("A plan for this keyword already exists"); return;
+    }
+    plans.unshift(buildPlan(kw));
+    SP.set("plans", plans);
+    renderList();
+    toast("Content plan created");
+    document.getElementById("planList").scrollIntoView({behavior:"smooth"});
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyword Finder — Find USA Search Keywords | Website SEO Pilot</title>
+<meta name="description" content="Research USA Google search keywords: get keyword ideas with search intent, suggested pages and content angles for your topic or product.">
+<link rel="canonical" href="https://merajhosenbayzid-hue.github.io/website-seo-pilot/keyword-finder.html">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="index.html"><span class="brand-mark">✈</span> Website SEO Pilot</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="keyword-finder.html">Keyword Finder</a>
+      <a href="content-planner.html">Content Planner</a>
+      <a href="seo-audit.html">SEO Audit</a>
+      <a href="traffic-analytics.html">Traffic Analytics</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="section">
+    <h2>🔍 Keyword Finder</h2>
+    <p class="lede">Research topics and keywords for USA Google search. Enter your topic — the tool builds structured keyword ideas with search intent and content angles.</p>
+
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field">
+          <label for="fTopic">Topic or product name *</label>
+          <input id="fTopic" type="text" placeholder="e.g. free URL shortener">
+        </div>
+        <div class="field">
+          <label for="fSite">Website URL (optional)</label>
+          <input id="fSite" type="url" placeholder="https://example.com">
+        </div>
+        <div class="field">
+          <label for="fCountry">Target country</label>
+          <select id="fCountry" disabled><option>United States</option></select>
+          <div class="hint">v1 targets USA only.</div>
+        </div>
+        <div class="field">
+          <label for="fLang">Language</label>
+          <select id="fLang" disabled><option>English</option></select>
+        </div>
+        <div class="field">
+          <label for="fType">Keyword type</label>
+          <select id="fType">
+            <option value="all">All types</option>
+            <option value="informational">Informational</option>
+            <option value="commercial">Commercial</option>
+            <option value="navigational">Navigational</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" id="researchBtn">Start research</button>
+    </div>
+
+    <div class="notice info">These are <strong>research starting points</strong> — brainstormed keyword angles for the USA market. This version shows no search-volume or difficulty numbers, because we only display real data, never estimates.</div>
+
+    <div id="results"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>✈ <strong>Website SEO Pilot</strong> — Free SEO Research &amp; Organic Growth Tools</span>
+    <span><a href="help.html">Help</a> · <a href="settings.html">Settings</a> · v1.0</span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script>
+(function(){
+  "use strict";
+  var s = SP.settings();
+  if(s.site) document.getElementById("fSite").value = s.site;
+
+  function titleCase(str){
+    return str.toLowerCase().replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+  }
+  function cap(str){ return str.charAt(0).toUpperCase() + str.slice(1); }
+
+  function buildIdeas(topic){
+    var t = topic.trim().toLowerCase();
+    var P = titleCase(topic.trim());
+    var ideas = [];
+    function add(k, intent, idea){ ideas.push({keyword:k, intent:intent, page:titleCase(k), idea:idea, country:"United States"}); }
+
+    // Informational
+    add("what is " + t, "informational", "Beginner explainer: what " + t + " is and how it works");
+    add("how to use " + t, "informational", "Step-by-step tutorial for getting started with " + t);
+    add("how does " + t + " work", "informational", "Simple breakdown of how " + t + " works behind the scenes");
+    add(t + " guide", "informational", "The complete " + t + " guide for 2026");
+    add(t + " tips and tricks", "informational", "Practical tips to get more out of " + t);
+    add(t + " tutorial for beginners", "informational", "Beginner-friendly video + text tutorial series");
+    add("why " + t + " is important", "informational", "Explainer on why " + t + " matters right now");
+    add(t + " explained simply", "informational", "Jargon-free explanation anyone can understand");
+    // Commercial
+    add("best " + t, "commercial", "Roundup: the best " + t + " options compared side by side");
+    add("best free " + t, "commercial", "Curated list of the best free " + t + " options");
+    add(t + " pricing comparison", "commercial", "Honest pricing breakdown: which plan is worth it");
+    add(t + " review", "commercial", "In-depth hands-on review with pros and cons");
+    add("top " + t + " tools", "commercial", "Top 10 tools ranked by features and value");
+    add("affordable " + t, "commercial", "Budget-friendly picks that still deliver");
+    add(t + " for small business", "commercial", "How small businesses can use " + t + " effectively");
+    add(t + " alternatives", "commercial", "Best alternatives compared: features, pricing, verdict");
+    // Navigational
+    add(t + " official website", "navigational", "Landing page: official home of " + P);
+    add(t + " login", "navigational", "Sign-in help page with troubleshooting");
+    add(t + " app download", "navigational", "Official app download and install guide");
+    add(t + " customer support", "navigational", "Support hub: contact options and help articles");
+    return ideas;
+  }
+
+  function render(ideas){
+    var box = document.getElementById("results");
+    if(!ideas.length){ box.innerHTML = '<div class="empty">No ideas for this filter — try "All types".</div>'; return; }
+    var html = '<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">'
+      + '<strong>' + ideas.length + ' keyword ideas</strong>'
+      + '<div><button class="btn small ghost" id="selAll">Select all</button> '
+      + '<button class="btn small" id="sendBtn">Send selected to Content Planner →</button></div></div>'
+      + '<div class="table-wrap"><table><thead><tr><th></th><th>Keyword</th><th>Intent</th><th>Suggested page</th><th>Content idea</th><th>Country</th></tr></thead><tbody>';
+    ideas.forEach(function(r, i){
+      html += '<tr><td><input type="checkbox" class="pick" data-i="' + i + '"></td>'
+        + '<td><strong>' + esc(r.keyword) + '</strong></td>'
+        + '<td><span class="intent ' + r.intent + '">' + cap(r.intent) + '</span></td>'
+        + '<td>' + esc(r.page) + '</td>'
+        + '<td>' + esc(r.idea) + '</td>'
+        + '<td>' + esc(r.country) + '</td></tr>';
+    });
+    box.innerHTML = html + '</tbody></table></div></div>';
+
+    document.getElementById("selAll").addEventListener("click", function(){
+      var boxes = document.querySelectorAll(".pick");
+      var allChecked = Array.prototype.every.call(boxes, function(b){ return b.checked; });
+      boxes.forEach(function(b){ b.checked = !allChecked; });
+    });
+    document.getElementById("sendBtn").addEventListener("click", function(){
+      var chosen = [];
+      document.querySelectorAll(".pick:checked").forEach(function(b){
+        chosen.push(ideas[+b.getAttribute("data-i")]);
+      });
+      if(!chosen.length){ toast("Select at least one keyword"); return; }
+      var saved = SP.get("keywords", []);
+      chosen.forEach(function(c){
+        if(!saved.some(function(x){ return x.keyword === c.keyword; })) saved.push(c);
+      });
+      SP.set("keywords", saved);
+      toast(chosen.length + " keyword(s) sent to Content Planner");
+      setTimeout(function(){ location.href = "content-planner.html"; }, 700);
+    });
+  }
+
+  var lastIdeas = [];
+  document.getElementById("researchBtn").addEventListener("click", function(){
+    var topic = document.getElementById("fTopic").value.trim();
+    if(!topic){ toast("Enter a topic or product name"); return; }
+    var type = document.getElementById("fType").value;
+    lastIdeas = buildIdeas(topic).filter(function(r){
+      return type === "all" || r.intent === type;
+    }).slice(0, 30);
+    render(lastIdeas);
+  });
+})();
+</script>
+</body>
+</html>

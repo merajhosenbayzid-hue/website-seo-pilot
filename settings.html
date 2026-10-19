@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Website &amp; Preferences | Website SEO Pilot</title>
+<meta name="description" content="Configure Website SEO Pilot: your website URL, target country, language, and manage your saved keywords and content plans.">
+<link rel="canonical" href="https://merajhosenbayzid-hue.github.io/website-seo-pilot/settings.html">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="index.html"><span class="brand-mark">✈</span> Website SEO Pilot</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="keyword-finder.html">Keyword Finder</a>
+      <a href="content-planner.html">Content Planner</a>
+      <a href="seo-audit.html">SEO Audit</a>
+      <a href="traffic-analytics.html">Traffic Analytics</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="section">
+    <h2>⚙️ Settings</h2>
+    <p class="lede">Your website and preferences. Everything is stored in your own browser — nothing is sent anywhere.</p>
+
+    <div class="panel">
+      <h3 style="margin-bottom:14px">Website</h3>
+      <div class="form-grid">
+        <div class="field">
+          <label for="sSite">Your website URL</label>
+          <input id="sSite" type="url" placeholder="https://example.com">
+          <div class="hint">Used by the audit tool and internal-link suggestions.</div>
+        </div>
+        <div class="field">
+          <label for="sCountry">Target country</label>
+          <select id="sCountry" disabled><option>United States</option></select>
+        </div>
+        <div class="field">
+          <label for="sLang">Language</label>
+          <select id="sLang" disabled><option>English</option></select>
+        </div>
+      </div>
+      <button class="btn" id="saveBtn">Save settings</button>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-bottom:14px">Your data</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin-bottom:14px" id="dataSummary"></p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn ghost small" id="exportBtn">Export data (JSON)</button>
+        <label class="btn ghost small" style="cursor:pointer">Import data<input type="file" id="importFile" accept="application/json" style="display:none"></label>
+        <button class="btn danger small" id="clearBtn">Clear all data</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-bottom:10px">API connections</h3>
+      <p style="color:var(--muted);font-size:.93rem">Version 1 needs no API keys — all tools run in your browser. Keyword-data providers and the Google Search Console OAuth connection arrive with the v2 backend. API keys will <strong>never</strong> be stored in frontend code.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>✈ <strong>Website SEO Pilot</strong> — Free SEO Research &amp; Organic Growth Tools</span>
+    <span><a href="help.html">Help</a> · <a href="settings.html">Settings</a> · v1.0</span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script>
+(function(){
+  "use strict";
+  var s = SP.settings();
+  document.getElementById("sSite").value = s.site || "";
+
+  function summary(){
+    var k = SP.get("keywords", []).length;
+    var p = SP.get("plans", []).length;
+    document.getElementById("dataSummary").textContent =
+      "Saved in this browser: " + k + " keyword(s), " + p + " content plan(s).";
+  }
+  summary();
+
+  document.getElementById("saveBtn").addEventListener("click", function(){
+    var v = document.getElementById("sSite").value.trim();
+    if(v && !/^https?:\/\//i.test(v)) v = "https://" + v;
+    var cur = SP.settings();
+    cur.site = v;
+    SP.set("settings", cur);
+    toast("Settings saved");
+  });
+
+  document.getElementById("exportBtn").addEventListener("click", function(){
+    var data = {
+      settings: SP.get("settings", {}),
+      keywords: SP.get("keywords", []),
+      plans: SP.get("plans", []),
+      exportedAt: new Date().toISOString()
+    };
+    var blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "seo-pilot-data.json";
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+    toast("Data exported");
+  });
+
+  document.getElementById("importFile").addEventListener("change", function(e){
+    var f = e.target.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        var d = JSON.parse(r.result);
+        if(d.settings) SP.set("settings", d.settings);
+        if(d.keywords) SP.set("keywords", d.keywords);
+        if(d.plans) SP.set("plans", d.plans);
+        summary();
+        document.getElementById("sSite").value = (d.settings && d.settings.site) || "";
+        toast("Data imported");
+      }catch(err){ toast("Invalid file — import failed"); }
+    };
+    r.readAsText(f);
+    e.target.value = "";
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    if(!confirm("Delete all saved keywords, plans and settings?")) return;
+    ["settings","keywords","plans"].forEach(function(k){
+      try{ localStorage.removeItem("sp_" + k); }catch(e){}
+    });
+    document.getElementById("sSite").value = "";
+    summary();
+    toast("All data cleared");
+  });
+})();
+</script>
+</body>
+</html>

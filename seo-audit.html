@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Audit — Check Your Website's SEO Issues | Website SEO Pilot</title>
+<meta name="description" content="Run a free on-page SEO audit: check page title, meta description, H1, canonical, robots, sitemap, mobile-friendliness and page speed.">
+<link rel="canonical" href="https://merajhosenbayzid-hue.github.io/website-seo-pilot/seo-audit.html">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="index.html"><span class="brand-mark">✈</span> Website SEO Pilot</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="keyword-finder.html">Keyword Finder</a>
+      <a href="content-planner.html">Content Planner</a>
+      <a href="seo-audit.html">SEO Audit</a>
+      <a href="traffic-analytics.html">Traffic Analytics</a>
+      <a href="settings.html">Settings</a>
+      <a href="help.html">Help</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="section">
+    <h2>🩺 SEO Audit</h2>
+    <p class="lede">Enter a page URL to check common on-page SEO issues. This tool only tests — it never guarantees rankings.</p>
+
+    <div class="panel">
+      <div class="form-grid">
+        <div class="field" style="grid-column:1/-1">
+          <label for="aUrl">Page URL to audit</label>
+          <input id="aUrl" type="url" placeholder="https://example.com/page">
+        </div>
+      </div>
+      <button class="btn" id="auditBtn">Run audit</button>
+      <div id="auditStatus" style="margin-top:12px;color:var(--muted);font-size:.9rem"></div>
+    </div>
+
+    <div class="notice info">Browser security (CORS) blocks this page from reading <strong>other websites</strong> directly. Pages on this same site audit fully; for other sites the tool shows exactly which checks were blocked — a full server-side audit arrives with the v2 backend.</div>
+
+    <div id="auditOut"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>✈ <strong>Website SEO Pilot</strong> — Free SEO Research &amp; Organic Growth Tools</span>
+    <span><a href="help.html">Help</a> · <a href="settings.html">Settings</a> · v1.0</span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var input = document.getElementById("aUrl");
+  var params = new URLSearchParams(location.search);
+  input.value = params.get("url") || SP.settings().site || "";
+
+  function row(status, title, detail){
+    var mark = status === "pass" ? "✅" : status === "warn" ? "⚠️" : "❌";
+    return '<div class="check ' + status + '"><div class="mark">' + mark + '</div>'
+      + '<div><h4>' + esc(title) + '</h4><p>' + detail + '</p></div></div>';
+  }
+
+  function renderBlocked(url){
+    document.getElementById("auditOut").innerHTML =
+      '<div class="panel"><h3 style="margin-bottom:10px">Audit blocked by browser security</h3>'
+      + '<p style="color:var(--muted);font-size:.94rem">Your browser refused to let this page read <code>' + esc(url) + '</code> (CORS policy). '
+      + 'This is normal and safe — no website can read another site\u2019s pages from the browser without permission.</p>'
+      + '<div class="notice" style="margin-top:14px"><strong>What you can do:</strong><ul style="margin:8px 0 0 18px">'
+      + '<li>Audit pages on <strong>this same website</strong> — those work fully.</li>'
+      + '<li>Use your browser\u2019s View Source to manually check title, meta description and H1.</li>'
+      + '<li>Wait for the v2 backend, which will run server-side audits of any URL.</li>'
+      + '</ul></div></div>';
+  }
+
+  function runAudit(url, html, ms){
+    var doc = new DOMParser().parseFromString(html, "text/html");
+    var out = [];
+    var q = function(sel){ return doc.querySelector(sel); };
+    var meta = function(name){
+      var el = doc.querySelector('meta[name="' + name + '"]');
+      return el ? (el.getAttribute("content") || "") : null;
+    };
+
+    // 1. Title
+    var title = (q("title") && q("title").textContent.trim()) || "";
+    if(!title) out.push(row("fail", "Page title", "No <code>&lt;title&gt;</code> found. Every page needs a unique, descriptive title."));
+    else if(title.length < 30) out.push(row("warn", "Page title", "Found, but short (" + title.length + " chars). Aim for 30–60 characters. <code>" + esc(title) + "</code>"));
+    else if(title.length > 60) out.push(row("warn", "Page title", "Found, but long (" + title.length + " chars) — may be cut off in Google. <code>" + esc(title) + "</code>"));
+    else out.push(row("pass", "Page title", "Good length (" + title.length + " chars). <code>" + esc(title) + "</code>"));
+
+    // 2. Meta description
+    var desc = meta("description");
+    if(desc === null) out.push(row("fail", "Meta description", "No meta description found. Add one (120–160 chars) to control your Google snippet."));
+    else if(desc.length < 120) out.push(row("warn", "Meta description", "Found, but short (" + desc.length + " chars). Aim for 120–160 characters."));
+    else if(desc.length > 160) out.push(row("warn", "Meta description", "Found, but long (" + desc.length + " chars) — may be truncated."));
+    else out.push(row("pass", "Meta description", "Good length (" + desc.length + " chars)."));
+
+    // 3. H1
+    var h1s = doc.querySelectorAll("h1");
+    if(!h1s.length) out.push(row("fail", "H1 heading", "No <code>&lt;h1&gt;</code> found. Every page should have one clear H1."));
+    else if(h1s.length > 1) out.push(row("warn", "H1 heading", h1s.length + " H1 tags found — use exactly one per page. First: <code>" + esc(h1s[0].textContent.trim().slice(0,80)) + "</code>"));
+    else out.push(row("pass", "H1 heading", "Exactly one H1. <code>" + esc(h1s[0].textContent.trim().slice(0,80)) + "</code>"));
+
+    // 4. Canonical
+    var can = q('link[rel="canonical"]');
+    if(!can) out.push(row("warn", "Canonical", "No canonical tag found. Add one to avoid duplicate-content issues."));
+    else out.push(row("pass", "Canonical", "Canonical set: <code>" + esc(can.getAttribute("href") || "") + "</code>"));
+
+    // 5. Robots
+    var robots = meta("robots");
+    if(robots && /noindex/i.test(robots)) out.push(row("fail", "Robots", "Meta robots says <code>noindex</code> — Google will NOT show this page in search."));
+    else out.push(row("pass", "Robots", robots ? "Meta robots: <code>" + esc(robots) + "</code> — Google can read this page." : "No blocking robots tag — Google can read this page."));
+
+    // 6. Mobile friendly (viewport)
+    var vp = q('meta[name="viewport"]');
+    if(!vp) out.push(row("fail", "Mobile friendly", "No viewport meta tag — the page is probably not mobile-friendly."));
+    else out.push(row("pass", "Mobile friendly", "Viewport meta tag present — basic mobile requirement met."));
+
+    // 7. Page speed (fetch timing — labeled honestly)
+    if(ms < 800) out.push(row("pass", "Page speed", "Page fetched in " + ms + " ms from your browser — fast. (Lab timing only, not real user field data.)"));
+    else if(ms < 2000) out.push(row("warn", "Page speed", "Page fetched in " + ms + " ms — acceptable, but could be faster. (Lab timing only.)"));
+    else out.push(row("warn", "Page speed", "Page fetched in " + ms + " ms — slow. Compress images and reduce scripts. (Lab timing only, not field data.)"));
+
+    document.getElementById("auditOut").innerHTML =
+      '<div class="panel"><h3 style="margin-bottom:6px">Audit results</h3>'
+      + '<p style="color:var(--muted);font-size:.9rem;margin-bottom:8px">Checked <code>' + esc(url) + '</code> just now.</p>'
+      + out.join("") + '</div>';
+
+    // 8. Sitemap (async, best effort)
+    try{
+      var sm = new URL("/sitemap.xml", url).href;
+      fetch(sm, {method:"GET"}).then(function(r){
+        var el = document.getElementById("smRow");
+        if(!el) return;
+        el.outerHTML = r.ok
+          ? row("pass", "Sitemap", "Found at <code>/sitemap.xml</code>.")
+          : row("warn", "Sitemap", "No sitemap at <code>/sitemap.xml</code> (HTTP " + r.status + "). Add one and submit it in Search Console.");
+      }).catch(function(){
+        var el = document.getElementById("smRow");
+        if(el) el.outerHTML = row("warn", "Sitemap", "Could not check <code>/sitemap.xml</code> (blocked or missing).");
+      });
+      var panel = document.querySelector("#auditOut .panel");
+      if(panel) panel.insertAdjacentHTML("beforeend", '<div id="smRow">' + row("warn", "Sitemap", "Checking <code>/sitemap.xml</code>…") + "</div>");
+    }catch(e){}
+  }
+
+  document.getElementById("auditBtn").addEventListener("click", function(){
+    var url = input.value.trim();
+    if(!url){ toast("Enter a page URL"); return; }
+    if(!/^https?:\/\//i.test(url)) url = "https://" + url;
+    var s = SP.settings(); s.site = url; SP.set("settings", s);
+    var box = document.getElementById("auditOut");
+    var status = document.getElementById("auditStatus");
+    box.innerHTML = ""; status.textContent = "Fetching page…";
+    var t0 = performance.now();
+    fetch(url, {redirect:"follow"}).then(function(r){
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      return r.text().then(function(html){ return {html:html, ms:Math.round(performance.now()-t0)}; });
+    }).then(function(res){
+      status.textContent = "";
+      runAudit(url, res.html, res.ms);
+    }).catch(function(){
+      status.textContent = "";
+      renderBlocked(url);
+    });
+  });
+})();
+</script>
+</body>
+</html>
